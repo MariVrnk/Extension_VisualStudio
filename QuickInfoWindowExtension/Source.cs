@@ -13,6 +13,17 @@ namespace QuickInfoWindowExtension
 {
     internal class Source : IQuickInfoSource
     {
+        private SourceProvider m_provider;
+        private ITextBuffer m_subjectBuffer;
+        private Dictionary<string, string> m_dictionary;
+
+        public Source(SourceProvider provider, ITextBuffer subjectBuffer)
+        {
+            m_provider = provider;
+            m_subjectBuffer = subjectBuffer;
+            m_dictionary = new Dictionary<string, string>();
+        }
+
         public void AugmentQuickInfoSession(IQuickInfoSession session, IList<object> quickInfoContent, out ITrackingSpan applicableToSpan)
         {
             throw new NotImplementedException();
@@ -30,10 +41,22 @@ namespace QuickInfoWindowExtension
         {
             throw new NotImplementedException();
         }
+
     }
 
     internal class Controller : IIntellisenseController
     {
+        private ITextView m_textView;
+        private IList<ITextBuffer> m_subjectBuffers;
+        private ControllerProvider m_provider;
+        private IQuickInfoSession m_session;
+
+        internal Controller(ITextView textView, IList<ITextBuffer> subjectBuffers, ControllerProvider provider)
+        {
+            m_textView = textView;
+            m_subjectBuffers = subjectBuffers;
+            m_provider = provider;
+        }
         public void ConnectSubjectBuffer(ITextBuffer subjectBuffer)
         {
             throw new NotImplementedException();
