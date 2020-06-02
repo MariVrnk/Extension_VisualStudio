@@ -35,13 +35,22 @@ namespace QuickInfoWindowExtension
         }
     }
 
+    [Export(typeof(IQuickInfoSourceProvider))]
+    [Name("ToolTip QuickInfo Source")]
+    [Order(Before = "Default Quick Info Presenter")]
+    [ContentType("text")]
     internal class SourceProvider : IQuickInfoSourceProvider
     {
+        [Import]
+        internal ITextStructureNavigatorSelectorService NavigatorService { get; set; }
+
+        [Import]
+        internal ITextBufferFactoryService TextBufferFactoryService { get; set; }
+
         public IQuickInfoSource TryCreateQuickInfoSource(ITextBuffer textBuffer)
         {
-            throw new NotImplementedException();
+            return new Source(this, textBuffer);
         }
-
     }
 
     internal class Controller : IIntellisenseController
