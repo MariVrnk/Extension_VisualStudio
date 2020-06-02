@@ -82,11 +82,17 @@ namespace QuickInfoWindowExtension
         }
     }
 
+    [Export(typeof(IIntellisenseControllerProvider))]
+    [Name("ToolTip QuickInfo Controller")]
+    [ContentType("text")]
     internal class ControllerProvider : IIntellisenseControllerProvider
     {
+        [Import]
+        internal IQuickInfoBroker QuickInfoBroker { get; set; }
+
         public IIntellisenseController TryCreateIntellisenseController(ITextView textView, IList<ITextBuffer> subjectBuffers)
         {
-            throw new NotImplementedException();
+            return new Controller(textView, subjectBuffers, this);
         }
     }
 }
