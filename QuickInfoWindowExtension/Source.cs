@@ -22,7 +22,15 @@ namespace QuickInfoWindowExtension
             m_provider = provider;
             m_subjectBuffer = subjectBuffer;
             m_dictionary = new Dictionary<string, string>();
-        }
+            m_dictionary.Add("psvm", "click tab to get 'public static void main', program entry point");
+            m_dictionary.Add("return", "stop the program, display the result of the functions");
+            m_dictionary.Add("throw", "standart operator for throwing exceptions");
+            m_dictionary.Add("add", "int add(int firstInt, int secondInt)\nAdds one integer to another.");
+            m_dictionary.Add("subtract", "int subtract(int firstInt, int secondInt)\nSubtracts one integer from another.");
+            m_dictionary.Add("multiply", "int multiply(int firstInt, int secondInt)\nMultiplies one integer by another.");
+            m_dictionary.Add("divide", "int divide(int firstInt, int secondInt)\nDivides one integer by another.");
+        
+         }
 
         public void AugmentQuickInfoSession(IQuickInfoSession session, IList<object> qiContent, out ITrackingSpan applicableToSpan)
         {
