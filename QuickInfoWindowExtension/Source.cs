@@ -24,14 +24,50 @@ namespace QuickInfoWindowExtension
             m_dictionary = new Dictionary<string, string>();
         }
 
-        public void AugmentQuickInfoSession(IQuickInfoSession session, IList<object> quickInfoContent, out ITrackingSpan applicableToSpan)
+        public void AugmentQuickInfoSession(IQuickInfoSession session, IList<object> qiContent, out ITrackingSpan applicableToSpan)
         {
-            throw new NotImplementedException();
+            SnapshotPoint? subjectTriggerPoint = session.GetTriggerPoint(m_subjectBuffer.CurrentSnapshot);
+            if (!subjectTriggerPoint.HasValue)
+            {
+                applicableToSpan = null;
+                return;
+            }
+            ITextSnapshot currentSnapshot = subjectTriggerPoint.Value.Snapshot;
+            SnapshotSpan querySpan = new SnapshotSpan(subjectTriggerPoint.Value, 0);
+            ITextStructureNavigator navigator = m_provider.NavigatorService.GetTextStructureNavigator(m_subjectBuffer);
+            TextExtent extent = navigator.GetExtentOfWord(subjectTriggerPoint.Value);
+            string searchText = extent.Span.GetText();
+            foreach (string key in m_dictionary.Keys)
+            {
+                int foundIndex = searchText.IndexOf(key, StringComparison.CurrentCultureIgnoreCase);
+                if (foundIndex > -1)
+                {
+                    applicableToSpan = currentSnapshot.CreateTrackingSpan
+                        (
+                            extent.Span.Start + foundIndex, key.Length, SpanTrackingMode.EdgeInclusive
+                        );
+
+                    string value;
+                    m_dictionary.TryGetValue(key, out value);
+                    if (value != null)
+                        qiContent.Add(value);
+                    else
+                        qiContent.Add("");
+
+                    return;
+                }
+            }
+            applicableToSpan = null;
         }
 
+        private bool m_isDisposed;
         public void Dispose()
         {
-            throw new NotImplementedException();
+            if (!m_isDisposed)
+            {
+                GC.SuppressFinalize(this);
+                m_isDisposed = true;
+            }
         }
     }
 
