@@ -13,10 +13,13 @@ namespace QuickInfoWindowExtension
 {
     internal class Source : IQuickInfoSource
     {
+        //fields for the provider of quick info sources
         private SourceProvider m_provider;
         private ITextBuffer m_subjectBuffer;
         private Dictionary<string, string> m_dictionary;
 
+        //a constructor that installs a quick code source provider 
+        //and text buffer and populates a set of method names
         public Source(SourceProvider provider, ITextBuffer subjectBuffer)
         {
             m_provider = provider;
@@ -32,6 +35,8 @@ namespace QuickInfoWindowExtension
         
          }
 
+        //the method finds the current word or previous word 
+        //if the cursor is at the end of a line or text buffer
         public void AugmentQuickInfoSession(IQuickInfoSession session, IList<object> qiContent, out ITrackingSpan applicableToSpan)
         {
             SnapshotPoint? subjectTriggerPoint = session.GetTriggerPoint(m_subjectBuffer.CurrentSnapshot);
@@ -79,6 +84,7 @@ namespace QuickInfoWindowExtension
         }
     }
 
+    //provider sources
     [Export(typeof(IQuickInfoSourceProvider))]
     [Name("ToolTip QuickInfo Source")]
     [Order(Before = "Default Quick Info Presenter")]
@@ -99,11 +105,14 @@ namespace QuickInfoWindowExtension
 
     internal class Controller : IIntellisenseController
     {
+        //private fields for presenting text, text buffers presented in text representation, 
+        //quickinfo session, and quickInfo controller provider
         private ITextView m_textView;
         private IList<ITextBuffer> m_subjectBuffers;
         private ControllerProvider m_provider;
         private IQuickInfoSession m_session;
 
+        //a constructor that sets fields and adds a mouse event handler
         internal Controller(ITextView textView, IList<ITextBuffer> subjectBuffers, ControllerProvider provider)
         {
             m_textView = textView;
@@ -112,6 +121,7 @@ namespace QuickInfoWindowExtension
             m_textView.MouseHover += this.OnTextViewMouseHover;
         }
 
+        //a mouse-hanging event handler that launches the QuickInfo session
         private void OnTextViewMouseHover(object sender, MouseHoverEventArgs e)
         {            
             SnapshotPoint? point = m_textView.BufferGraph.MapDownToFirstMatch
@@ -132,6 +142,7 @@ namespace QuickInfoWindowExtension
             }
         }
 
+        //removes the mouse event handler when the controller is separated from the text view
         public void Detach(ITextView textView)
         {
             if (m_textView == textView)
