@@ -1,8 +1,9 @@
 # Extension_VisualStudio
 
-<h1>What is it?</h1>
+<h2>What is it?</h2>
 This is an Extension for Visual Studio IDE
 
+<h2>What will be shown?</h2>
 This is what you will see when you hover over the following words
 
 | word | text in the window |
